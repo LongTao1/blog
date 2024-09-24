@@ -22,8 +22,8 @@ jobs:
       - name: 配置git
         env:
           ACTION_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-          GIT_EMAIL: ${{ secrets.GITHUBEMAIL }}
-          GIT_USERNAME: ${{ secrets.GITHUBUSERNAME }}
+          GIT_EMAIL: ${{ vars.GIT_USER_NAME }}
+          GIT_USERNAME: ${{ vars.GIT_EMAIL }}
         run: |
           mkdir -p ~/.ssh/
           echo "$ACTION_DEPLOY_KEY" > ~/.ssh/id_rsa
