@@ -13,6 +13,7 @@ jobs:
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@v2
       # 每个name表示一个步骤:step
       - name: Use Node.js 20.x
         uses: actions/setup-node@v2
