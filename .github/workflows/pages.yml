@@ -56,7 +56,7 @@ jobs:
         run: npm run build
       - name: Get the output
         run: |
-          echo "${{ secrets.ACTIONS_DEPLOY_KEY  }}"
+          echo "密钥信息： ${{ secrets.ACTIONS_DEPLOY_KEY  }}"
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
