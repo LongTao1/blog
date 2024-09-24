@@ -18,10 +18,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: "20.x" #action使用的node版本，建议大版本和本地保持一致。可以在本地用node -v查询版本号。
-          
+
       - name: 配置git
         env:
-          ACTION_DEPLOY_KEY: ${{ secrets.HEXO_DEPLOY_KEY }}
+          ACTION_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
           GIT_EMAIL: ${{ secrets.GITHUBEMAIL }}
           GIT_USERNAME: ${{ secrets.GITHUBUSERNAME }}
         run: |
