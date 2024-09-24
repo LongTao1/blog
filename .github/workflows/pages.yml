@@ -54,6 +54,9 @@ jobs:
         run: npm run clean
       - name: Build
         run: npm run build
+      - name: Get the output
+        run: |
+          echo "${{ secrets.ACTIONS_DEPLOY_KEY  }}"
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
