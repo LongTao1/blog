@@ -1,36 +1,44 @@
-name: Deploy # workflow name
-
+name: 自动部署
+# 当有改动推送到master分支时，启动Action
 on:
-  [push] # 触发事件
+  push:
+    branches:
+      - main
 
 jobs:
-  build: # job1 id
-    runs-on: ubuntu-latest # 运行环境为最新版 Ubuntu
-    name: A job to deploy blog.
+  deploy:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout # step1 获取源码
-        uses: actions/checkout@v1 # 使用 actions/checkout@v1
-        with: # 条件
-          submodules: true # Checkout private submodules(themes or something else). 当有子模块时切换分支？
-
-      # Caching dependencies to speed up workflows. (GitHub will remove any cache entries that have not been accessed in over 7 days.) 缓存压缩 node_modules，不用每次下载，使用时解压，可以加快工作流的执行过程，超过 7 天没有使用将删除压缩包。
-#      - name: Cache node modules # step2
-#        uses: actions/cache@v1
-#        id: cache
-#        with:
-#          path: node_modules
-#          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-#          restore-keys: |
-#            ${{ runner.os }}-node-
-      - name: Install Dependencies # step3 name
-        if: steps.cache.outputs.cache-hit != 'true' # 如果变量 cache-hit 不等于 true
-        run: npm install # 安装 node modules 相关依赖
-
-      # Deploy hexo blog website.
-      - name: Deploy # step4
-        id: deploy
-        uses: sma11black/hexo-action@v1.0.0
+      - name: 检查分支
+        uses: actions/checkout@v2
         with:
-          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-          user_name: LongTao1
-          user_email: javalongtao@163.com
+          ref: main
+
+      - name: 安装 Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: "20.x" #action使用的node版本，建议大版本和本地保持一致。可以在本地用node -v查询版本号。
+
+      - name: 安装 Hexo
+        run: |
+          export TZ='Asia/Shanghai'
+          npm install hexo-cli -g
+
+      - name: 缓存 Hexo
+        uses: actions/cache@v1
+        id: cache
+        with:
+          path: node_modules
+          key: ${{runner.OS}}-${{hashFiles('**/package-lock.json')}}
+
+      - name: 安装依赖
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          npm install gulp-cli -g #全局安装gulp
+          npm install --save
+
+      - name: 执行命令进行部署
+        run: |
+               hexo clean
+               hexo generate
+               hexo deploy
